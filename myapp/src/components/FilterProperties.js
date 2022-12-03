@@ -53,7 +53,7 @@ function FilterProperties() {
         </h1>
       </div> */}
 
-      <div className=" overflow-x-scroll xxl:overflow-hidden flex items-center  xl:justify-center">
+      <div className=" overflow-x-scroll 2xl:overflow-hidden flex items-center  xl:justify-center">
         <Stack
           direction={["row", "row", "row", "row", "row"]}
           alignItems="center"
