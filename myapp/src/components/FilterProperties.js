@@ -1,5 +1,12 @@
 import React from "react";
-import { Select, Button, Heading, HStack, filter } from "@chakra-ui/react";
+import {
+  Select,
+  Button,
+  Heading,
+  HStack,
+  filter,
+  Center,
+} from "@chakra-ui/react";
 import BedIcon from "@mui/icons-material/Bed";
 import BathtubIcon from "@mui/icons-material/Bathtub";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
@@ -20,6 +27,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import properties from "../properties";
 
@@ -29,7 +37,9 @@ function FilterProperties() {
   const [Location, setLocation] = React.useState("");
   const [When, setWhen] = React.useState("");
   const [Type, setType] = React.useState("");
+  const [display, setDisplay] = React.useState("none");
   const handleSearch = React.useCallback(() => {
+    setDisplay("flex");
     setFilters(
       properties.filter(
         (ele) =>
@@ -46,14 +56,14 @@ function FilterProperties() {
   });
 
   return (
-    <div className="p-8 md:p-16 xl:px-[150px]">
+    <div className="p-8 md:p-16  xl:px-16">
       {/* <div className="w-[100%] xl:px-[150px]">
         <h1 className="text-xl md:text-3xl font-bold">
           Search properties to rent
         </h1>
       </div> */}
 
-      <div className=" overflow-x-scroll 2xl:overflow-hidden flex items-center  xl:justify-center">
+      <div className=" overflow-x-scroll xl:overflow-hidden flex items-center  xl:justify-center">
         <Stack
           direction={["row", "row", "row", "row", "row"]}
           alignItems="center"
@@ -218,7 +228,13 @@ function FilterProperties() {
               );
             })
           ) : (
-            <></>
+            <div>
+              <Alert status="error" display={display}>
+                <AlertIcon />
+                <AlertTitle>No Results</AlertTitle>
+                <AlertDescription>Try with different filters</AlertDescription>
+              </Alert>
+            </div>
           )}
         </SimpleGrid>
       </div>
