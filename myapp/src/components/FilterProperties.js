@@ -3,6 +3,8 @@ import { Select, Button, Heading, HStack, filter } from "@chakra-ui/react";
 import BedIcon from "@mui/icons-material/Bed";
 import BathtubIcon from "@mui/icons-material/Bathtub";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+
 import {
   SimpleGrid,
   // Box,
@@ -15,21 +17,33 @@ import {
   Text,
   CardFooter,
   CardBody,
+  Alert,
+  AlertIcon,
+  AlertTitle,
 } from "@chakra-ui/react";
 import properties from "../properties";
 
 function FilterProperties() {
-  const [state, setState] = React.useState({
-    Price: 400,
-    filters: [],
-    Location: "",
-    When: "",
-    Type: "",
+  const [Price, setPrice] = React.useState([]);
+  const [Filters, setFilters] = React.useState([]);
+  const [Location, setLocation] = React.useState("");
+  const [When, setWhen] = React.useState("");
+  const [Type, setType] = React.useState("");
+  const handleSearch = React.useCallback(() => {
+    setFilters(
+      properties.filter(
+        (ele) =>
+          (Price.length > 0
+            ? ele.Price >= parseInt(Price[0]) && ele.Price <= parseInt(Price[1])
+            : true) &&
+          (Location != "" ? ele.Location == Location : true) &&
+          (When != "" ? ele.MoveInDate == When : true) &&
+          (Type != "" ? ele.Type == Type : true)
+      )
+    );
+
+    console.log(Filters);
   });
-  React.useEffect(() => {
-    setState({ filters: properties.filter((ele) => ele.Price > state.Price) });
-    console.log(state.filters);
-  }, [state.Price, state.Location, state.Type]);
 
   return (
     <div className="p-8 md:p-16 xl:px-[150px]">
@@ -58,28 +72,29 @@ function FilterProperties() {
               variant="unstyled"
               fontSize="1.1em"
               onChange={(e) => {
-                setState({ Location: e.target.value });
+                setLocation(e.target.value);
               }}
             >
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="NewYork,USA">NewYork,USA</option>
+              <option value="LosAngels,CA">LosAngels,CA</option>
+              <option value="TexasCity,TX">TexasCity,TX</option>
             </Select>
           </div>
           <div className="w-[200px] p-2 border-r-2">
             <strong className=" text-slate-400">When</strong>
             <Select
-              placeholder="Select Move in Date"
+              placeholder="Select MoveIn Date"
               className="font-bold"
               variant="unstyled"
               fontSize="1.1em"
               onChange={(e) => {
-                setState({ When: e.target.value });
+                setWhen(e.target.value);
               }}
             >
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="15/12/2022">15/12/2022</option>
+              <option value="17/12/2022">17/12/2022</option>
+              <option value="20/12/2022">20/12/2022</option>
+              <option value="27/12/2022">27/12/2022</option>
             </Select>
           </div>
           <div className="w-[200px] p-2 border-r-2">
@@ -90,51 +105,67 @@ function FilterProperties() {
               variant="unstyled"
               fontSize="1.1em"
               onChange={(e) => {
-                setState({ Price: e.target.value });
+                setPrice(e.target.value.split("-"));
+                console.log(Price);
               }}
             >
-              <option value="option1">$500-1000</option>
-              <option value="option2">$1000-2000</option>
-              <option value="option3">$2000-4000</option>
+              <option value="1000-2000">$1000-2000</option>
+              <option value="2000-4000">$2000-4000</option>
             </Select>
           </div>
           <div className="w-[200px] p-2 border-r-2">
             <strong className=" text-slate-400">Property type</strong>
             <Select
-              placeholder="Select Property Type"
               className="font-bold"
               variant="unstyled"
               fontSize="1.1em"
+              placeholder="Select Type"
               onChange={(e) => {
-                setState({ Type: e.target.value });
-                console.log(state.Type);
+                setType(e.target.value);
+                console.log(Type);
               }}
             >
               <option value="House">House</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Mansion">Mansion</option>
+              <option value="Apartments">Apartment</option>
             </Select>
           </div>
-          <Button colorScheme="purple" size="lg">
+          <Button
+            size="lg"
+            onClick={handleSearch}
+            colorScheme="Indigo"
+            className=" bg-indigo-600"
+          >
             Search
           </Button>
         </Stack>
       </div>
       <div className="w-[100%] h-auto mt-[40px] flex items-center justify-center">
         <SimpleGrid columns={[1, null, 2, 3]} spacing="40px">
-          {properties.length > 0 ? (
-            properties.map(function (ele) {
+          {Filters.length > 0 ? (
+            Filters.map(function (ele) {
               return (
-                <Card key={ele.Price} maxW="320px" backgroundColor="#fff">
-                  <CardBody>
+                <Card
+                  key={ele.Price}
+                  maxW="340px"
+                  backgroundColor="#fff"
+                  padding="0px"
+                >
+                  <CardBody padding="0px">
                     <Image
                       src="https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                       alt="Green double couch with wooden legs"
                       borderRadius="lg"
+                      padding="5px"
                     />
-                    <Stack mt="6" spacing="3">
+                    <Stack
+                      mt="6"
+                      spacing="3"
+                      paddingLeft="20px"
+                      paddingRight="20px"
+                      paddingBottom="10px"
+                    >
                       <Text className=" tracking-normal space-x-1">
-                        <strong className="text-2xl font-bold text-purple-500">
+                        <strong className="text-2xl font-bold text-indigo-600">
                           ${ele.Price}
                         </strong>
                         <span className=" text-slate-400 font-semibold text-[0.9em]">
@@ -149,11 +180,15 @@ function FilterProperties() {
                   </CardBody>
                   <Divider />
                   <CardFooter>
-                    <HStack className="w-[100%] items-center " spacing="25px">
+                    <HStack
+                      whiteSpace="nowrap"
+                      className="w-[100%] items-center "
+                      spacing="30px"
+                    >
                       <div className="flex items-center">
                         <BedIcon
                           fontSize="0.9em"
-                          style={{ color: "purple", marginRight: "5px" }}
+                          style={{ color: "indigo", marginRight: "5px" }}
                         />
                         <Text className="text-[0.7em] text-slate-400">
                           3 Beds
@@ -162,7 +197,7 @@ function FilterProperties() {
                       <div className="flex items-center">
                         <BathtubIcon
                           fontSize="0.9em"
-                          style={{ color: "purple", marginRight: "5px" }}
+                          style={{ color: "indigo", marginRight: "5px" }}
                         />
                         <Text className="text-[0.7em] text-slate-400">
                           2 Bathrooms
@@ -171,10 +206,10 @@ function FilterProperties() {
                       <div className="flex items-center">
                         <SquareFootIcon
                           fontSize="0.9em"
-                          style={{ color: "purple", marginRight: "5px" }}
+                          style={{ color: "indigo", marginRight: "5px" }}
                         />
                         <Text className="text-[0.7em] text-slate-400">
-                          5*7m
+                          5*7 m^2
                         </Text>
                       </div>
                     </HStack>
@@ -183,7 +218,7 @@ function FilterProperties() {
               );
             })
           ) : (
-            <> </>
+            <></>
           )}
         </SimpleGrid>
       </div>
